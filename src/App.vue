@@ -1,7 +1,15 @@
 <template>
   <div id="app">
     <div class="container">
-      <Header title="Task Tracker" />
+      <Header
+        @toggle-add-task="toggleAddTask"
+        title="Task Tracker"
+        :showAddTask="showAddTask"
+      />
+      <div v-if="showAddTask">
+        <!-- v-show="showAddTask" -->
+        <AddTask @add-task="addTask" />
+      </div>
       <Tasks
         @toggle-reminder="toggleReminder"
         @delete-task="deleteTask"
@@ -12,54 +20,65 @@
 </template>
 
 <script>
-import Header from './components/Header'
-import Tasks from './components/Tasks'
+import Header from "./components/Header";
+import Tasks from "./components/Tasks";
+import AddTask from "./components/AddTask";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     Header,
-    Tasks
+    Tasks,
+    AddTask,
   },
   data() {
     return {
-      tasks: []
-    }
+      tasks: [],
+      showAddTask: false,
+    };
   },
   methods: {
     deleteTask(id) {
-      if(confirm('Are you sure?')){
-        this.tasks = this.tasks.filter((task) => task.id !== id)
+      if (confirm("Are you sure?")) {
+        this.tasks = this.tasks.filter((task) => task.id !== id);
       }
     },
     toggleReminder(id) {
-      console.log(id)
-      this.tasks = this.tasks.map((task) => task.id === id ? {...task, reminder: !task.reminder} : task)
-    }
+      console.log(id);
+      this.tasks = this.tasks.map((task) =>
+        task.id === id ? { ...task, reminder: !task.reminder } : task
+      );
+    },
+    addTask(task) {
+      this.tasks = [...this.tasks, task];
+    },
+    toggleAddTask() {
+      this.showAddTask = !this.showAddTask;
+    },
   },
   created() {
     this.tasks = [
       {
-        "id": "1",
-        "text": "Doctors Appointment",
-        "day": "March 5th at 2:30pm",
-        "reminder": true
+        id: "1",
+        text: "Doctors Appointment",
+        day: "March 5th at 2:30pm",
+        reminder: true,
       },
       {
-        "id": "2",
-        "text": "Meeting with boss",
-        "day": "March 6th at 1:30pm",
-        "reminder": true
+        id: "2",
+        text: "Meeting with boss",
+        day: "March 6th at 1:30pm",
+        reminder: true,
       },
       {
-        "id": "3",
-        "text": "Food shopping",
-        "day": "March 7th at 2:00pm",
-        "reminder": false
-      }
-    ]
-  }
-}
+        id: "3",
+        text: "Food shopping",
+        day: "March 7th at 2:00pm",
+        reminder: false,
+      },
+    ];
+  },
+};
 </script>
 
 <style>
